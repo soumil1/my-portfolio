@@ -104,7 +104,6 @@ function ProjectCard({ project }) {
       )}
 
       <VStack p={5} spacing={3} align="start" flex="1">
-        {/* --- UPDATED: Re-added the Flex container to hold the title and icons --- */}
         <Flex justify="space-between" align="center" w="full">
           <Heading as="h3" size="md" color={titleColor}>{project.title}</Heading>
           <HStack spacing={2}>
