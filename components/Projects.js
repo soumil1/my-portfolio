@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  Box, Container, Heading, SimpleGrid, Text, VStack, HStack, useColorModeValue, Tag, Center
+  Box, Container, Heading, SimpleGrid, Text, VStack, HStack, useColorModeValue, Tag, Center, Link, IconButton, Flex
 } from "@chakra-ui/react";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import NextImage from "next/image";
@@ -35,25 +35,31 @@ const PROJECTS = [
     id: 1,
     title: "Sortify - Sorting Visualizer",
     description: "Built an interactive educational tool for visualizing six common sorting algorithms. Used React, SCSS and Framer Motion. It features real time animations and a suite of user controls to adjust animation speed and array size.",
-    technologies: ["React", "JavaScript", "Framer Motion", "SCSS", "CSS"]
+    technologies: ["React", "JavaScript", "Framer Motion", "SCSS", "CSS"],
+    liveUrl: "https://sortifyvisualsorting.netlify.app/",
+    githubUrl: "https://github.com/soumil1/Sortify-Algorithm-Visualizer",
   },
   {
     id: 2,
     title: "Netflix Clone",
     description: "Responsive frontend clone of Netflix. Built with JavaScript, CSS and HTML, this project replicates core functionalities like movie browsing by genre. It integrates with the TMDB API to fetch and display real-time movie trailers and posters.",
-    technologies: ["HTML", "JavaScript", "CSS", "TMDB API", "Vercel"]
+    technologies: ["HTML", "JavaScript", "CSS", "TMDB API", "Vercel"],
+    liveUrl: "https://moviehub-netflix.vercel.app/",
+    githubUrl: "https://github.com/soumil1/Netflix", 
   },
   {
     id: 3,
     title: "Weather Alert Automation System",
     description: "Developed during an internship this system features a Node.js and Express.js backend with REST APIs to process weather data from multiple sources. Used Python scripts for initial data extraction and prototyping the alert trigger mechanism. The responsive React.js dashboard allows users to view and manage weather alerts.",
-    technologies: ["Node.js", "Express.js", "AWS", "React", "Python", "HTML", "CSS", "JavaScript", "SQL"]
+    technologies: ["Node.js", "Express.js", "AWS", "React", "Python", "HTML", "CSS", "JavaScript", "SQL"],
   },
   {
     id: 4,
     title: "Personal Portfolio Website",
     description: "A personal portfolio designed to showcase my skills and projects. Built with Next.js for optimal performance and Chakra UI for a polished and modern design. Website features smooth and engaging animations using Framer Motion and includes a functional contact form integrated with EmailJS for seamless communication.",
-    technologies: ["Next.js", "Chakra UI", "Framer Motion", "SCSS", "Tailwind CSS"]
+    technologies: ["Next.js", "Chakra UI", "Framer Motion", "SCSS", "Tailwind CSS"],
+    liveUrl: "/",
+    githubUrl: "https://github.com/soumil1/my-portfolio", 
   }
 ];
 
@@ -98,7 +104,19 @@ function ProjectCard({ project }) {
       )}
 
       <VStack p={5} spacing={3} align="start" flex="1">
-        <Heading as="h3" size="md" color={titleColor}>{project.title}</Heading>
+        {/* --- UPDATED: Re-added the Flex container to hold the title and icons --- */}
+        <Flex justify="space-between" align="center" w="full">
+          <Heading as="h3" size="md" color={titleColor}>{project.title}</Heading>
+          <HStack spacing={2}>
+            {project.githubUrl && (
+              <IconButton as={Link} href={project.githubUrl} target="_blank" aria-label="GitHub" icon={<Icon icon="skill-icons:github-dark" />} variant="ghost" size="sm" />
+            )}
+            {project.liveUrl && (
+              <IconButton as={Link} href={project.liveUrl} target="_blank" aria-label="Live Demo" icon={<Icon icon="ci:external-link" />} variant="ghost" size="sm" />
+            )}
+          </HStack>
+        </Flex>
+
         <Text color={textColor} fontSize="sm" flex="1">{project.description}</Text>
         <HStack spacing={2} wrap="wrap">
           {project.technologies.map((tech) => (
