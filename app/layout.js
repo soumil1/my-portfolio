@@ -1,6 +1,7 @@
 import { ColorModeScript } from '@chakra-ui/react';
 import Providers from '../components/Providers';
 import './globals.scss';
+import { Analytics } from '@vercel/analytics/react'
 
 export const metadata = {
   title: 'Soumil Singh — Portfolio',
@@ -13,6 +14,7 @@ export default function RootLayout({ children }) {
       <body>
         <ColorModeScript initialColorMode="dark" />
         <Providers>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );
