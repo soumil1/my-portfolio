@@ -3,7 +3,7 @@
 import {
   Box, Container, Heading, SimpleGrid, Text, VStack, HStack, useColorModeValue, Tag, Center, Link, IconButton, Flex
 } from "@chakra-ui/react";
-import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
+import { motion } from "framer-motion";
 import NextImage from "next/image";
 import { Icon } from "@iconify/react";
 import { useRef } from "react";
@@ -71,49 +71,49 @@ const PROJECTS = [
   },
 ];
 
+const ContainerVariants = {
+  hidden: { opacity: 0} ,
+  visible: {
+    opacity: 1, 
+    transition: { staggerChildren: 0.2},
+  }, 
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 }, 
+  visible: {
+    opacity: 1, 
+    y: 0, 
+    transition: { type: "spring", stiffness: 100 }, 
+  }, 
+}
+
 function ProjectCard({ project }) {
   const ref = useRef(null);
   const cardBg = useColorModeValue("#fff", "#000");
   const borderColor = useColorModeValue("#e2e8f0", "#334155");
   const textColor = useColorModeValue("#475569", "#94a3b8");
   const titleColor = useColorModeValue("#1e293b", "#fff");
-  const imageBg = useColorModeValue("#f8fafc", "#1e293b");
-
-  const x = useMotionValue(0), y = useMotionValue(0);
-  const spring = { stiffness: 100, damping: 15 };
-  const imageX = useSpring(useTransform(x, [-100, 100], [-10, 10]), spring);
-  const imageY = useSpring(useTransform(y, [-100, 100], [-10, 10]), spring);
-
-  const handleMouseMove = (e) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    x.set(e.clientX - rect.left - rect.width / 2);
-    y.set(e.clientY - rect.top - rect.height / 2);
-  };
 
   return (
     <MotionBox
       ref={ref}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={() => { x.set(0); y.set(0); }}
+      variants={itemVariants}
       whileHover={{ scale: 1.03, boxShadow: "var(--chakra-shadows-xl)" }}
       bg={cardBg} border="1px solid" borderColor={borderColor}
       borderRadius="2xl" boxShadow="lg" overflow="hidden"
-      h="500px" display="flex" flexDirection="column"
+      display="flex" flexDirection="column"
     >
-      <Box w="full" h="220px" position="relative" bg={imageBg} flexShrink={0}>
-        <MotionBox style={{ x: imageX, y: imageY }} w="full" h="full">
-          <NextImage
-            src={project.image} alt={project.title}
-            layout="fill" objectFit="contain"
-          />
-        </MotionBox>
-      </Box>
+      {project.image && (
+        <Box h="200px" w="full" position="relative">
+          <NextImage src={project.image} alt={project.title} layout="fill" objectFit="cover" />
+        </Box>
+      )}
 
       <VStack p={5} spacing={3} align="start" flex="1" justify="space-between">
         <Flex justify="space-between" w="full">
           <Heading as="h3" size="md" color={titleColor}>{project.title}</Heading>
-          <HStack>
+          <HStack spacing={2}>
             {project.githubUrl && (
               <IconButton as={Link} href={project.githubUrl} target="_blank"
                 aria-label="GitHub" icon={<Icon icon="skill-icons:github-dark" />}
@@ -141,39 +141,49 @@ function ProjectCard({ project }) {
 }
 
 export default function Projects() {
-  const headingColor = useColorModeValue("#000", "#fff");
   const sectionBg = useColorModeValue("#f1f5f9", "#0f172a");
-  const textColor = useColorModeValue("#475569", "#94a3b8");
+  const headingColor = useColorModeValue("#000", "#fff");
   const boxBg = useColorModeValue("#fff", "#1e293b");
   const boxBorder = useColorModeValue("#e2e8f0", "#334155");
+  const textColor = useColorModeValue("#475569", "#94a3b8");
   const gearIconColor = useColorModeValue("#1e293b", "#f8fafc");
 
   return (
     <Box as="section" id="projects" bg={sectionBg} py={{ base: 20, md: 28 }}>
       <Container maxW="6xl">
-        <Text as="h2" fontSize={{ base: "3xl", md: "4xl" }} fontWeight="bold" textAlign="center" mb={12} color={headingColor}>
-          My Recent Work
-        </Text>
-
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8}>
-          {PROJECTS.map((p) => <ProjectCard key={p.id} project={p} />)}
-        </SimpleGrid>
-
-        <Center mt={16}>
-          <MotionVStack
-            spacing={3} textAlign="center" p={6} bg={boxBg}
-            borderRadius="2xl" border="1px dashed" borderColor={boxBorder}
-            whileHover={{ scale: 1.03, boxShadow: "var(--chakra-shadows-xl)" }}
-          >
-            <motion.div animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }}>
-              <Icon icon="ph:gear-six-duotone" fontSize="32px" color={gearIconColor} />
-            </motion.div>
-            <Heading as="h3" size="sm">More Projects Coming Soon!</Heading>
-            <Text color={textColor} fontSize="sm">
-              I am always working on new and exciting projects. Check back soon for more updates.
+        <MotionBox
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+        >
+          <MotionBox variants={itemVariants} textAlign="center" mb={12}>
+            <Text as="h2" fontSize={{ base: "3xl", md: "4xl" }} fontWeight="bold" color={headingColor}>
+              My Recent Work
             </Text>
-          </MotionVStack>
-        </Center>
+          </MotionBox>
+
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8}>
+            {PROJECTS.map((p) => <ProjectCard key={p.id} project={p} />)}
+          </SimpleGrid>
+
+          <Center mt={16}>
+            <MotionVStack
+              spacing={3} textAlign="center" p={6} bg={boxBg}
+              borderRadius="2xl" border="1px dashed" borderColor={boxBorder}
+              whileHover={{ scale: 1.03, boxShadow: "var(--chakra-shadows-xl)" }}
+              variants={itemVariants}
+            >
+              <motion.div animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }}>
+                <Icon icon="ph:gear-six-duotone" fontSize="32px" color={gearIconColor} />
+              </motion.div>
+              <Heading as="h3" size="sm">More Projects Coming Soon!</Heading>
+              <Text color={textColor} fontSize="sm">
+                I am always working on new and exciting projects. Check back soon for more updates.
+              </Text>
+            </MotionVStack>
+          </Center>
+        </MotionBox>
       </Container>
     </Box>
   );
