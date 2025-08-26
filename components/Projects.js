@@ -71,7 +71,7 @@ const PROJECTS = [
   },
 ];
 
-const ContainerVariants = {
+const containerVariants = {
   hidden: { opacity: 0} ,
   visible: {
     opacity: 1, 
